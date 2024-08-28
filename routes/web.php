@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,10 @@ Route::get('/products', [ProductsController::class, 'index']);
 Route::post('/products/create', [ProductsController::class, 'store']);
 // Route::put('/clients/update', [ProductsController::class, 'update']);
 // Route::delete('/clients/delete', [ProductsController::class, 'delete']);
+
+Route::get('/payments', [PaymentController::class, 'index']);
+Route::post('/payment/create', [PaymentController::class, 'store']);
+Route::delete('/payment/delete', [PaymentController::class, 'delete']);
 
 
 

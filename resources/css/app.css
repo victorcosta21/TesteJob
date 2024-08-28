@@ -20,6 +20,10 @@ hr{
     width: 100%;
 }
 
+.payment-container{
+    width: 1000px !important;
+}
+
 .bootstrap-select{
     width: 100% !important;
     height: 40px;

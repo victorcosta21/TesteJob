@@ -268,6 +268,70 @@ $(document).ready(function(){
         }
     });
 
+    $('#daysPayment').on('change', function() {
+        var selectedValue = $(this).val();
+        
+        if (selectedValue === 'Personalizado') {
+            $('#paymentOptionsDiv').removeClass('d-none');
+        } else {
+            $('#paymentOptionsDiv').addClass('d-none');
+        }
+    });
+
+    // Salvar Venda
+    $('#saveSell').on('click', function() {
+        var clientSelect = $('#clientSelect').val();
+        var totValue = $('#totValue').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+        var qtdPacel = $('#qtdPacel').val();
+        var typePayment = $('#daysPayment').val();
+
+        $.ajax({
+            url: '/payment/create',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                clientSelect: clientSelect,
+                totValue: totValue,
+                qtdPacel: qtdPacel,
+                typePayment: typePayment
+            },
+            success: function(response) {
+                alert('Venda salva com sucesso!');
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao salvar a venda:', error);
+                alert('Houve um erro ao salvar a venda. Tente novamente.');
+            }
+        });
+    });
+
+    $(document).on('click', '.remove-payment', function() {
+        if (confirm("Tem certeza que deseja remover este registro?")) {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/payment/delete',
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro ao remover o registro:', error);
+                    alert('Houve um erro ao remover o registro. Tente novamente.');
+                }
+            });
+        }
+    });
 
 
 });

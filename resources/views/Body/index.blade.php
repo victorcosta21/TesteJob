@@ -111,7 +111,7 @@
 
                     </div>
 
-                    <div class="row mt-4 d-flex">
+                    <div class="row mt-4 d-flex d-none" id="paymentOptionsDiv">
                         <div> 
                             <button class="btn btn-success" id="addDayPayment">Adicionar Pagamento</button>
                         </div>
@@ -146,12 +146,15 @@
         <br><hr>
         <div class="subtotal">
             <h4>Valor Total</h4>
-            <div class="row"> 
+            <div class="row d-flex"> 
                 <div class="col-md-3">
                     <input type="text" class="form-control" readonly id="totValue"></input>
                 </div>
-                <div class="col-md-3"> 
+                <div class="col-md-2"> 
                     <button type="button" class="btn btn-success" id="saveSell">Salvar Venda</button>
+                </div>
+                <div class="col-md-3"> 
+                    <a href="/payments" type="button" class="btn btn-success" id="allSell" href="/payments">Visualizar Vendas</a>
                 </div>
             </div>
         </div
