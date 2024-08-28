@@ -5,5 +5,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('.moneyMask').mask('0.000,00', {reverse: true});
+});
+
+$(document).ready(function(){
+    $('.cpfMask').mask('000.000.000-00', {reverse: true});
+});
+</script>
 </body>
 </html>

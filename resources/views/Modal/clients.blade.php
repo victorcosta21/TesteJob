@@ -10,11 +10,11 @@
                 <form id="cadastroClienteForm">
                     <div class="mb-3">
                         <label for="nomeCliente" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="nomeCliente" placeholder="Digite o nome do cliente" required>
+                        <input type="text" class="form-control" id="nomeCliente" placeholder="Digite o nome do cliente" required maxlength="50">
                     </div>
                     <div class="mb-3">
                         <label for="cpfCliente" class="form-label">CPF</label>
-                        <input type="text" class="form-control" id="cpfCliente" placeholder="Digite o CPF do cliente" required>
+                        <input type="text" class="form-control cpfMask" id="cpfCliente" placeholder="Digite o CPF do cliente" required>
                     </div>
                 </form>
             </div>

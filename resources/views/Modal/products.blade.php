@@ -10,11 +10,11 @@
                 <form id="cadastroProductForm">
                     <div class="mb-3">
                         <label for="nomeProduct" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="nomeProduct" placeholder="Digite o nome do produto" required>
+                        <input type="text" class="form-control" id="nomeProduct" placeholder="Digite o nome do produto" required maxlength="50">
                     </div>
                     <div class="mb-3">
                         <label for="valueProduct" class="form-label">Valor</label>
-                        <input type="text" class="form-control" id="valueProduct" placeholder="R$ 0.000,00" required>
+                        <input type="text" class="form-control moneyMask" id="valueProduct" placeholder="R$ 0.000,00" required>
                     </div>
                 </form>
             </div>
@@ -27,10 +27,6 @@
 </div>
 
 <script>
-$(document).ready(function(){
-    $('#valueProduct').mask('0.000,00', {reverse: true});
-});
-
 $(document).ready(function() {
     $('#cadastroProductForm').on('submit', function(event) {
         event.preventDefault();
