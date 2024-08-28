@@ -20,6 +20,9 @@ class ProductsController extends Controller
             'value' => 'required|string|max:14',
         ]);
 
+        $valor = str_replace('.', '', $request->value);
+        $valor = str_replace(',', '.', $valor);
+
         $client = new Products();
         $client->name = $request->name;
         $client->value = $valor;

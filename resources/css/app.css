@@ -4,6 +4,7 @@ body {
     display: flex;
     justify-content: center;
     padding: 60px;
+    padding-bottom: 52%;
 }
 
 hr{
@@ -33,7 +34,7 @@ hr{
     border-radius: 6px;
 }
 
-.client-btn{
+.client-btn, .product-btn{
     height: 30px;
     width: 30px;
     font-size: 12px;
@@ -41,10 +42,30 @@ hr{
     margin-top: 5%;
 }
 
-.product-btn{
-    height: 30px;
-    width: 30px;
-    font-size: 12px;
-    padding: 0px;
-    margin-top: 15%;
+.switch-tabs{
+    text-align: center;
+    display: flex;
+    padding-left: 2%;
+    padding-right: 2%;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.active{
+    border-bottom: 2px solid green;
+    color: green;
+}
+
+.inactive{
+    border-bottom: 1px solid gray;
+    color: gray;
+}
+
+.select-payment-types{
+    display: flex;
+    flex-direction: column;
+}
+
+.list-payment-type{
+    padding-left: 5%;
 }

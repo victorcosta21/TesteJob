@@ -7,11 +7,269 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
 $(document).ready(function(){
-    $('.moneyMask').mask('0.000,00', {reverse: true});
-});
-
-$(document).ready(function(){
+    // Masks
+    $('.moneyMask').mask('000.000,00', {reverse: true});
     $('.cpfMask').mask('000.000.000-00', {reverse: true});
+
+    // Funções para o funcionando da listagem
+    $('#productSelect, #qtdProduct').on('change', function() {
+        var produtoSelecionado = $('#productSelect').val();
+        if (produtoSelecionado) {
+            $('#addList').prop('disabled', false);
+        } else {
+            $('#addList').prop('disabled', true);
+        }
+        var partesProduto = produtoSelecionado.split(' / ');
+        var nomeProduto = partesProduto[0];
+        var valorUnitario = parseFloat(partesProduto[1].replace(',', '.'));
+        
+        var quantidade = parseInt($('#qtdProduct').val());
+
+        if (!quantidade || quantidade === 0) {
+            quantidade = 1;
+            $('#qtdProduct').val(1);
+        }
+        var subtotal = quantidade * valorUnitario;
+
+        const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+        const valorUnitarioFormatado = formatter.format(valorUnitario);
+        const subtotalFormatado = formatter.format(subtotal);
+
+        $('#unitProduct').val(valorUnitarioFormatado);
+        $('#totProduct').val(subtotalFormatado);
+    });
+
+    $('#addList').on('click', function() {
+        // Capturando os valores dos inputs
+        var produtoSelecionado = $('#productSelect').val();
+        var quantidade = $('#qtdProduct').val();
+        var valorUnitario = $('#unitProduct').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+        var subtotal = $('#totProduct').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+
+        if (!subtotal || subtotal === '0.00') {
+            subtotal = (parseFloat(quantidade) * parseFloat(valorUnitario.replace(',', '.'))).toFixed(2);
+        }
+
+        var valorUnitarioFormatado = formatarMoeda(valorUnitario);
+        var subtotalFormatado = formatarMoeda(subtotal);
+
+        var novaLinha = `
+            <tr>
+                <th>${produtoSelecionado}</th>
+                <td>${quantidade}</td>
+                <td>${valorUnitarioFormatado}</td>
+                <td>${subtotalFormatado}</td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-item"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                </td>
+            </tr>
+        `;
+
+        $('.listProducts tbody').append(novaLinha);
+        
+        $('#productSelect').val('');
+        $('#qtdProduct').val('');
+        $('#unitProduct').val('');
+        $('#totProduct').val('');
+        $('.selectpicker').selectpicker('refresh');
+
+        $('#addList').prop('disabled', true);
+
+        atualizarTotal();
+    });
+
+    $(document).on('click', '.remove-item', function() {
+        if (confirm("Tem certeza que deseja remover este item?")) {
+            $(this).closest('tr').remove();
+            atualizarTotal();
+        }
+    });
+
+    function atualizarTotal() {
+        var total = 0;
+
+        $('.listProducts tbody tr').each(function() {
+            // Remove "R$", espaços, e ajusta ponto/vírgula para cálculo
+            var subtotal = $(this).find('td:nth-child(4)').text().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+            total += parseFloat(subtotal);
+        });
+
+        // Atualiza o valor total no input com formatação monetária
+        $('#totValue').val(formatarMoeda(total));
+    }
+
+    function formatarMoeda(valor) {
+        return 'R$ ' + parseFloat(valor).toFixed(2)
+            .replace('.', ',') // Troca o ponto decimal por vírgula
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Adiciona separadores de milhares
+    }
+
+    // Função para o switch tabs
+    $('#tabList, #tabPayment').on('click', function() {
+        if($('#totValue').val()){
+            $('#tabList, #tabPayment').removeClass('active inactive');
+            $('.listProducts, .paymentProducts').addClass('d-none');
+            if ($(this).attr('id') === 'tabList') {
+                $('#tabList').addClass('active');
+                $('#tabPayment').addClass('inactive');
+                $('.listProducts').removeClass('d-none');
+            } else {
+                $('#tabList').addClass('inactive');
+                $('#tabPayment').addClass('active');
+                $('.paymentProducts').removeClass('d-none');
+            }
+        }
+    });
+
+    // Função para calcular as parcelas
+    $('#daysPayment, #qtdPacel, #datePay, #typePayment').on('change input', function() {
+        if ($('#daysPayment').val() === 'Fixo' && $('#qtdPacel').val() && $('#datePay').val() &&$('#typePayment').val()) {
+            preencherTabela();
+        }
+    });
+
+    $(document).on('click', '.remove-item-and-decrease-parcel', function() {
+        if (confirm("Tem certeza que deseja remover este item?")) {
+            $(this).closest('tr').remove();
+            var quantidadeParcelas = parseInt($('#qtdPacel').val(), 10); // Captura o valor atual do input de parcelas
+            if (quantidadeParcelas > 1) { // Garante que a quantidade de parcelas não seja menor que 1
+                $('#qtdPacel').val(quantidadeParcelas - 1); // Diminui em 1 o valor atual
+            }
+            preencherTabela();
+        }
+    });
+    
+    function preencherTabela() {
+        var totalValue = parseFloat($('#totValue').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.'));
+        var parcelas = parseInt($('#qtdPacel').val(), 10);
+        var dataVencimento = new Date($('#datePay').val());
+
+        dataVencimento.setDate(dataVencimento.getDate() + 1);
+
+        if (!isNaN(totalValue) && !isNaN(parcelas) && parcelas > 0) {
+            var valorPorParcela = (totalValue / parcelas).toFixed(2);
+            var valorTotalArredondado = (valorPorParcela * parcelas).toFixed(2);
+            var diferenca = (totalValue - valorTotalArredondado).toFixed(2);
+            var tipoPagamento = $('#typePayment').val();
+
+            var tbody = $('.table-striped tbody');
+            tbody.empty();
+
+            for (var i = 1; i <= parcelas; i++) {
+                var dataParcela = new Date(dataVencimento);
+                dataParcela.setMonth(dataParcela.getMonth() + (i - 1));
+
+                var dia = String(dataParcela.getDate()).padStart(2, '0');
+                var mes = String(dataParcela.getMonth() + 1).padStart(2, '0');
+                var ano = dataParcela.getFullYear();
+                var dataFormatada = `${dia}/${mes}/${ano}`;
+
+                var valorExibido = i === parcelas ? 
+                    (parseFloat(valorPorParcela) + parseFloat(diferenca)).toFixed(2) : 
+                    valorPorParcela;
+
+                valorExibido = parseFloat(valorExibido).toFixed(2);
+
+                tbody.append(`
+                    <tr>
+                        <td>${i}</td>
+                        <td>${dataFormatada}</td>
+                        <td>${formatarMoeda(valorExibido)}</td>
+                        <td>${tipoPagamento}</td>
+                        <td><button type="button" class="btn btn-danger remove-item-and-decrease-parcel"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
+                    </tr>
+                `);
+            }
+        }
+    }
+
+    var personalizedParcelas = [];
+    $('#addDayPayment').on('click', function() {
+        if ($('#daysPayment').val() === 'Personalizado') {
+            var dataVencimento = new Date($('#datePay').val());
+
+            if (!isNaN(dataVencimento)) {
+                var valorParcelaInput = $('#valueToPay').val();
+                if (valorParcelaInput === undefined || valorParcelaInput.trim() === '') {
+                    alert("Por favor, insira um valor para a parcela.");
+                    return;
+                }
+
+                var valorParcela = parseFloat(valorParcelaInput.replace('R$', '').replace(/\./g, '').replace(',', '.'));
+
+                if (isNaN(valorParcela) || valorParcela <= 0) {
+                    alert("Por favor, insira um valor válido para a parcela.");
+                    return;
+                }
+
+                var totalValue = parseFloat($('#totValue').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.'));
+
+                var totalParcelas = personalizedParcelas.reduce((acc, val) => acc + val, 0);
+
+                if ((totalParcelas + valorParcela) > totalValue) {
+                    alert("O valor total das parcelas não pode exceder o valor total da venda.");
+                    return;
+                }
+
+                personalizedParcelas.push(valorParcela);
+
+                var diaFormatado = String(dataVencimento.getDate()).padStart(2, '0');
+                var mes = String(dataVencimento.getMonth() + 1).padStart(2, '0');
+                var ano = dataVencimento.getFullYear();
+                var dataFormatada = `${diaFormatado}/${mes}/${ano}`;
+                var tipoPagamento = $('#typePayment').val();
+
+                $('.table-striped tbody').append(`
+                    <tr>
+                        <td>${personalizedParcelas.length}</td>
+                        <td>${dataFormatada}</td>
+                        <td>${formatarMoeda(valorParcela)}</td>
+                        <td>${tipoPagamento}</td>
+                        <td><button type="button" class="btn btn-danger remove-item-and-adjuste-final-value"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
+                    </tr>
+                `);
+
+                atualizarValorRestante();
+            } else {
+                alert("Por favor, selecione uma data de vencimento válida.");
+            }
+        }
+    });
+
+    function atualizarValorRestante() {
+        var totalValue = parseFloat($('#totValue').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.'));
+        var totalParcelas = personalizedParcelas.reduce((acc, val) => acc + val, 0);
+        var valorRestante = totalValue - totalParcelas;
+
+        if (valorRestante == 0) {
+            $('#qtdPacel').val(personalizedParcelas.length);
+        }
+
+        $('#valueNeedPay').val(formatarMoeda(valorRestante));
+    }
+
+    $(document).on('click', '.remove-item-and-adjuste-final-value', function() {
+        if (confirm("Tem certeza que deseja remover este item?")) {
+            var valorParcelaRemovida = parseFloat($(this).closest('tr').find('td:eq(2)').text().replace('R$', '').replace(/\./g, '').replace(',', '.'));
+
+            $(this).closest('tr').remove();
+
+            var index = personalizedParcelas.indexOf(valorParcelaRemovida);
+            if (index > -1) {
+                personalizedParcelas.splice(index, 1);
+            }
+
+            var quantidadeParcelas = parseInt($('#qtdPacel').val(), 10);
+            if (quantidadeParcelas > 1) {
+                $('#qtdPacel').val(quantidadeParcelas - 1);
+            }
+
+            atualizarValorRestante();
+        }
+    });
+
+
+
 });
 </script>
 </body>
