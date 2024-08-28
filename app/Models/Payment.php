@@ -15,4 +15,9 @@ class Payment extends Model
         'qtd_parcels',
         'payment_type',
     ];
+
+    public function linkedPayments()
+    {
+        return $this->hasMany(LinkedPayments::class, 'payment_id');
+    }
 }

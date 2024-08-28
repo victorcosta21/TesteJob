@@ -282,6 +282,21 @@ $(document).ready(function(){
         var qtdPacel = $('#qtdPacel').val();
         var typePayment = $('#daysPayment').val();
 
+        var listPaymentData = [];
+        $('.list-payment-type tbody tr').each(function() {
+            var parcela = $(this).find('td').eq(0).text();
+            var data = $(this).find('td').eq(1).text();
+            var valor = $(this).find('td').eq(2).text().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+            var tipo = $(this).find('td').eq(3).text();
+
+            listPaymentData.push({
+                parcela: parcela,
+                data: data,
+                valor: valor,
+                tipo: tipo
+            });
+        });
+
         $.ajax({
             url: '/payment/create',
             type: 'POST',
@@ -290,11 +305,12 @@ $(document).ready(function(){
                 clientSelect: clientSelect,
                 totValue: totValue,
                 qtdPacel: qtdPacel,
-                typePayment: typePayment
+                typePayment: typePayment,
+                paymentDetails: listPaymentData
             },
             success: function(response) {
                 alert('Venda salva com sucesso!');
-                location.reload();
+                // location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao salvar a venda:', error);
@@ -337,15 +353,43 @@ $(document).ready(function(){
             url: '/payment/show/' + paymentId,
             type: 'GET',
             success: function(response) {
-                $('#paymentModal .modal-body').html(`
-                    <p><strong>ID:</strong> ${response.id}</p>
-                    <p><strong>Cliente:</strong> ${response.client}</p>
-                    <p><strong>Valor Total:</strong> ${formatarMoeda(response.subtotal)}</p>
-                    <p><strong>Data:</strong> ${formatarDataISO(response.created_at)}</p>
-                    <!-- Adicione outros detalhes conforme necessário -->
-                `);
+                if (Array.isArray(response.linked_payments)) {
+                    var linkedPaymentsTable = `
+                        <table class="table table-striped mt-3">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Parcela</th>
+                                    <th scope="col">Data</th>
+                                    <th scope="col">Valor</th>
+                                    <th scope="col">Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${response.linked_payments.map(payment => `
+                                    <tr>
+                                        <td>${payment.parcel}</td>
+                                        <td>${payment.pay_date}</td>
+                                        <td>${formatarMoeda(payment.pay_value)}</td>
+                                        <td>${payment.type_payment}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
 
-                $('#paymentModal').modal('show');
+                    $('#paymentModal .modal-body').html(`
+                        <p><strong>ID:</strong> ${response.id}</p>
+                        <p><strong>Cliente:</strong> ${response.client}</p>
+                        <p><strong>Valor Total:</strong> ${formatarMoeda(response.subtotal)}</p>
+                        <p><strong>Data:</strong> ${formatarDataISO(response.created_at)}</p>
+                        ${linkedPaymentsTable}
+                    `);
+
+                    $('#paymentModal').modal('show');
+                } else {
+                    console.error('Os dados de linked_payments não estão no formato esperado.');
+                    alert('Houve um erro ao processar os detalhes do pagamento.');
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao buscar detalhes do pagamento:', error);

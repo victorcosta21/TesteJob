@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Payment;
+use App\Models\LinkedPayments;
 
 class PaymentController extends Controller
 {
@@ -30,6 +31,18 @@ class PaymentController extends Controller
         $payments->payment_type = $request->typePayment;
         $payments->save();
 
+        $paymentDetails = $request->paymentDetails;
+
+        foreach($paymentDetails as $paymentDetail){
+            $linkedPayment = new LinkedPayments();
+            $linkedPayment->payment_id = $payments->id;
+            $linkedPayment->type_payment = $paymentDetail['tipo'];
+            $linkedPayment->parcel = $paymentDetail['parcela'];
+            $linkedPayment->pay_date = $paymentDetail['data'];
+            $linkedPayment->pay_value = $paymentDetail['valor'];
+            $linkedPayment->save();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Pagamento cadastrado com sucesso!'
@@ -38,7 +51,7 @@ class PaymentController extends Controller
 
     public function show($id)
     {
-        $payment = Payment::find($id);
+        $payment = Payment::where('id', $id)->with('linkedPayments')->first();
         if ($payment) {
             return response()->json($payment);
         } else {

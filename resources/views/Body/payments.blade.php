@@ -6,7 +6,7 @@
     <div class="payment-header">
         <h3> Lista de Vendas</h3>
         <a href="/" class="btn btn-primary">Adicionar Venda</a>
-        <table class="table table-striped">
+        <table class="table table-striped mt-3">
             <thead>
                 <tr>
                   <th scope="col" style="width: 5%">ID</th>
