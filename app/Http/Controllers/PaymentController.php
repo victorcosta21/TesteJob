@@ -36,9 +36,14 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function show($id) 
+    public function show($id)
     {
-
+        $payment = Payment::find($id);
+        if ($payment) {
+            return response()->json($payment);
+        } else {
+            return response()->json(['error' => 'Pagamento não encontrado.'], 404);
+        }
     }
 
     public function delete(Request $request)

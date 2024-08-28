@@ -40,7 +40,6 @@ $(document).ready(function(){
     });
 
     $('#addList').on('click', function() {
-        // Capturando os valores dos inputs
         var produtoSelecionado = $('#productSelect').val();
         var quantidade = $('#qtdProduct').val();
         var valorUnitario = $('#unitProduct').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
@@ -89,19 +88,17 @@ $(document).ready(function(){
         var total = 0;
 
         $('.listProducts tbody tr').each(function() {
-            // Remove "R$", espaços, e ajusta ponto/vírgula para cálculo
             var subtotal = $(this).find('td:nth-child(4)').text().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
             total += parseFloat(subtotal);
         });
 
-        // Atualiza o valor total no input com formatação monetária
         $('#totValue').val(formatarMoeda(total));
     }
 
     function formatarMoeda(valor) {
         return 'R$ ' + parseFloat(valor).toFixed(2)
-            .replace('.', ',') // Troca o ponto decimal por vírgula
-            .replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Adiciona separadores de milhares
+            .replace('.', ',')
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
 
     // Função para o switch tabs
@@ -131,9 +128,9 @@ $(document).ready(function(){
     $(document).on('click', '.remove-item-and-decrease-parcel', function() {
         if (confirm("Tem certeza que deseja remover este item?")) {
             $(this).closest('tr').remove();
-            var quantidadeParcelas = parseInt($('#qtdPacel').val(), 10); // Captura o valor atual do input de parcelas
-            if (quantidadeParcelas > 1) { // Garante que a quantidade de parcelas não seja menor que 1
-                $('#qtdPacel').val(quantidadeParcelas - 1); // Diminui em 1 o valor atual
+            var quantidadeParcelas = parseInt($('#qtdPacel').val(), 10);
+            if (quantidadeParcelas > 1) { 
+                $('#qtdPacel').val(quantidadeParcelas - 1);
             }
             preencherTabela();
         }
@@ -333,6 +330,41 @@ $(document).ready(function(){
         }
     });
 
+    $(document).on('click', '.info-payment', function() {
+        var paymentId = $(this).data('id');
+
+        $.ajax({
+            url: '/payment/show/' + paymentId,
+            type: 'GET',
+            success: function(response) {
+                $('#paymentModal .modal-body').html(`
+                    <p><strong>ID:</strong> ${response.id}</p>
+                    <p><strong>Cliente:</strong> ${response.client}</p>
+                    <p><strong>Valor Total:</strong> ${formatarMoeda(response.subtotal)}</p>
+                    <p><strong>Data:</strong> ${formatarDataISO(response.created_at)}</p>
+                    <!-- Adicione outros detalhes conforme necessário -->
+                `);
+
+                $('#paymentModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao buscar detalhes do pagamento:', error);
+                alert('Houve um erro ao buscar os detalhes do pagamento.');
+            }
+        });
+    });
+
+    function formatarDataISO(dataISO) {
+        var data = new Date(dataISO);
+
+        var dia = String(data.getDate()).padStart(2, '0');
+        var mes = String(data.getMonth() + 1).padStart(2, '0');
+        var ano = data.getFullYear();
+        var horas = String(data.getHours()).padStart(2, '0');
+        var minutos = String(data.getMinutes()).padStart(2, '0');
+
+        return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+    }
 
 });
 </script>

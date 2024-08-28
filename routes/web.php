@@ -32,6 +32,7 @@ Route::post('/products/create', [ProductsController::class, 'store']);
 Route::get('/payments', [PaymentController::class, 'index']);
 Route::post('/payment/create', [PaymentController::class, 'store']);
 Route::delete('/payment/delete', [PaymentController::class, 'delete']);
+Route::get('/payment/show/{id}', [PaymentController::class, 'show']);
 
 
 
