@@ -1,0 +1,42 @@
+body {
+    background-color: #ececec;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 60px;
+}
+
+hr{
+    padding: 0.2px;
+    background-color: rgba(0, 0, 0, 0.356);
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+}
+
+.bootstrap-select{
+    width: 100% !important;
+    height: 100%;
+}
+
+.btn-light{
+    height: 100%;
+}
+
+.client-form, .product-form{
+    border: 1px solid #ececec;
+    border-radius: 6px;
+}
+
+.client-btn, .product-btn{
+    height: 30px;
+    width: 30px;
+    font-size: 12px;
+    padding: 0px;
+    margin-top: 5%;
+}

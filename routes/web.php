@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\ProductsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index']);
+
+Route::get('/clients', [ClientsController::class, 'index']);
+Route::post('/clients/create', [ClientsController::class, 'store']);
+// Route::put('/clients/update', [ClientsController::class, 'update']);
+// Route::delete('/clients/delete', [ClientsController::class, 'delete']);
+
+Route::get('/products', [ProductsController::class, 'index']);
+Route::post('/products/create', [ProductsController::class, 'store']);
+// Route::put('/clients/update', [ProductsController::class, 'update']);
+// Route::delete('/clients/delete', [ProductsController::class, 'delete']);
+
+
+
