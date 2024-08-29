@@ -21,9 +21,12 @@
                 <button type="button" class="btn btn-primary client-btn" data-bs-toggle="modal" data-bs-target="#clienteModal">+</button>
             </div>
         </div>
-        @extends('Modal.clients')
     </div>
     <hr>
+
+    @extends('Modal.clients')
+
+    @extends('Modal.products')
 
     <div class="product-header">
         <div class="row">
@@ -159,7 +162,6 @@
             </div>
         </div
         
-        @extends('Modal.products')
     </div>
 </div>
 

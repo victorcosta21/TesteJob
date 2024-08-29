@@ -23,14 +23,15 @@ class ProductsController extends Controller
         $valor = str_replace('.', '', $request->value);
         $valor = str_replace(',', '.', $valor);
 
-        $client = new Products();
-        $client->name = $request->name;
-        $client->value = $valor;
-        $client->save();
+        $product = new Products();
+        $product->name = $request->name;
+        $product->value = $valor;
+        $product->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Produto cadastrado com sucesso!'
+            'message' => 'Produto cadastrado com sucesso!',
+            'product' => $product
         ]);
     }
 

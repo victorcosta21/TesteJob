@@ -185,6 +185,7 @@ $(document).ready(function(){
         if ($('#daysPayment').val() === 'Personalizado') {
             var dataVencimento = new Date($('#datePay').val());
 
+            dataVencimento.setDate(dataVencimento.getDate() + 1);
             if (!isNaN(dataVencimento)) {
                 var valorParcelaInput = $('#valueToPay').val();
                 if (valorParcelaInput === undefined || valorParcelaInput.trim() === '') {
@@ -282,6 +283,17 @@ $(document).ready(function(){
         var qtdPacel = $('#qtdPacel').val();
         var typePayment = $('#daysPayment').val();
 
+        if(!$('#clientSelect').val()){
+            alert("Por favor, selecione um cliente para anexar a venda!");
+            return;
+        }
+
+        if ($('#daysPayment').val() === 'Personalizado' && $('#valueNeedPay').val() != 'R$ 0,00') {
+            console.log('valueNeedPay', $('#valueNeedPay').val());
+            alert("Insira o valor completo antes de salvar a venda!");
+            return;
+        }
+
         var listPaymentData = [];
         $('.list-payment-type tbody tr').each(function() {
             var parcela = $(this).find('td').eq(0).text();
@@ -310,7 +322,7 @@ $(document).ready(function(){
             },
             success: function(response) {
                 alert('Venda salva com sucesso!');
-                // location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao salvar a venda:', error);

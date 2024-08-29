@@ -44,6 +44,14 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.success) {
+                    $('#clientSelect').append(
+                        $('<option>', {
+                            text: response.client.name + ' / ' + response.client.document,
+                        })
+                    );
+
+                    $('#clientSelect').selectpicker('refresh');
+
                     alert(response.message);
                     $('#clienteModal').modal('hide');
                     $('#cadastroClienteForm')[0].reset();

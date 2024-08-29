@@ -44,6 +44,14 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.success) {
+                    $('#productSelect').append(
+                        $('<option>', {
+                            text: response.product.name + ' / ' + response.product.value,
+                        })
+                    );
+
+                    $('#productSelect').selectpicker('refresh');
+                    
                     alert(response.message);
                     $('#productModal').modal('hide');
                     $('#cadastroProductForm')[0].reset();

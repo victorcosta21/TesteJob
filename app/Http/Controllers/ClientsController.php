@@ -29,7 +29,8 @@ class ClientsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Cliente cadastrado com sucesso!'
+            'message' => 'Cliente cadastrado com sucesso!',
+            'client' => $client
         ]);
     }
 
