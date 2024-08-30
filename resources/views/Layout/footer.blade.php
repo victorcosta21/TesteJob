@@ -468,6 +468,33 @@ $(document).ready(function(){
             return;
         }
 
+        var totalPayments = 0;
+
+        $('.list-payment-type tbody tr').each(function() {
+            var valor = $(this).find('td').eq(2).text().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+            totalPayments += parseFloat(valor);
+        });
+
+        if (totalPayments < totValue) {
+            alert("A soma dos valores das parcelas é menor do que o valor total.");
+            return;
+        } else {
+            var listPaymentData = [];
+            $('.list-payment-type tbody tr').each(function() {
+                var parcela = $(this).find('td').eq(0).text();
+                var data = $(this).find('td').eq(1).text();
+                var valor = $(this).find('td').eq(2).text().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+                var tipo = $(this).find('td').eq(3).text();
+
+                listPaymentData.push({
+                    parcela: parcela,
+                    data: data,
+                    valor: valor,
+                    tipo: tipo
+                });
+            });
+        };
+
         var listProduct = [];
         $('.listProducts tbody tr').each(function() {
             var productNome = $(this).find('td').eq(0).text();
@@ -483,20 +510,6 @@ $(document).ready(function(){
             });
         });
 
-        var listPaymentData = [];
-        $('.list-payment-type tbody tr').each(function() {
-            var parcela = $(this).find('td').eq(0).text();
-            var data = $(this).find('td').eq(1).text();
-            var valor = $(this).find('td').eq(2).text().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
-            var tipo = $(this).find('td').eq(3).text();
-
-            listPaymentData.push({
-                parcela: parcela,
-                data: data,
-                valor: valor,
-                tipo: tipo
-            });
-        });
 
         $.ajax({
             url: '/payment/update/' + iptHiddenId,
