@@ -149,7 +149,7 @@ $(document).ready(function(){
             var diferenca = (totalValue - valorTotalArredondado).toFixed(2);
             var tipoPagamento = $('#typePayment').val();
 
-            var tbody = $('.table-striped tbody');
+            var tbody = $('.list-payment-type table tbody');
             tbody.empty();
 
             for (var i = 1; i <= parcelas; i++) {
@@ -294,6 +294,21 @@ $(document).ready(function(){
             return;
         }
 
+        var listProduct = [];
+        $('.listProducts tbody tr').each(function() {
+            var productNome = $(this).find('td').eq(0).text();
+            var productQuantidade = $(this).find('td').eq(1).text();
+            var productValor = $(this).find('td').eq(2).text();
+            var productSubtotal = $(this).find('td').eq(3).text();
+
+            listProduct.push({
+                nome: productNome,
+                quantidade: productQuantidade,
+                valor: productValor,
+                subtotal: productSubtotal
+            });
+        });
+
         var listPaymentData = [];
         $('.list-payment-type tbody tr').each(function() {
             var parcela = $(this).find('td').eq(0).text();
@@ -309,6 +324,9 @@ $(document).ready(function(){
             });
         });
 
+        console.log('listPaymentData', listPaymentData)
+        console.log('listProduct', listProduct)
+
         $.ajax({
             url: '/payment/create',
             type: 'POST',
@@ -318,11 +336,12 @@ $(document).ready(function(){
                 totValue: totValue,
                 qtdPacel: qtdPacel,
                 typePayment: typePayment,
-                paymentDetails: listPaymentData
+                paymentDetails: listPaymentData,
+                listProduct: listProduct
             },
             success: function(response) {
                 alert('Venda salva com sucesso!');
-                location.reload();
+                // location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao salvar a venda:', error);

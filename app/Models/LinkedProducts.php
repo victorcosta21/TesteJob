@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LinkedPayments extends Model
+class LinkedProducts extends Model
 {
     use HasFactory;
 
-    protected $table = 'linked_payments';
+    protected $table = 'linked_products';
 
     protected $fillable = [
         'payment_id',
-        'type_payment',
-        'parcel',
-        'pay_date',
-        'pay_value',
+        'product_name',
+        'quantity',
+        'value',
+        'sub_value',
     ];
 
     public function payment()

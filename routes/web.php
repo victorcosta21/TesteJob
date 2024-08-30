@@ -33,6 +33,8 @@ Route::get('/payments', [PaymentController::class, 'index']);
 Route::post('/payment/create', [PaymentController::class, 'store']);
 Route::delete('/payment/delete', [PaymentController::class, 'delete']);
 Route::get('/payment/show/{id}', [PaymentController::class, 'show']);
+Route::get('/payment/edit/{id}', [PaymentController::class, 'edit']);
+Route::put('/payment/update/{id}', [PaymentController::class, 'update']);
 
 
 

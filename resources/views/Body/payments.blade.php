@@ -14,7 +14,7 @@
                   <th scope="col" style="width: 10%">Valor</th>
                   <th scope="col" style="width: 15%">Quantiade Parcelas</th>
                   <th scope="col" style="width: 15%">Tipo de Pagamento</th>
-                  <th scope="col" style="width: 10%">Ações</th>
+                  <th scope="col" style="width: 15%">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -32,6 +32,9 @@
                             <button type="button" class="btn btn-primary info-payment" data-id={{$payment->id}}>
                                 <i class="fa fa-info" aria-hidden="true"></i>
                             </button>
+                            <a href="/payment/edit/{{$payment->id}}" type="button" class="btn btn-warning edit-payment">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a>
                         </th>
                     </tr>
                 @endforeach

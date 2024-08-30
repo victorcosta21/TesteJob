@@ -20,4 +20,9 @@ class Payment extends Model
     {
         return $this->hasMany(LinkedPayments::class, 'payment_id');
     }
+
+    public function linkedProducts()
+    {
+        return $this->hasMany(LinkedProducts::class, 'payment_id');
+    }
 }
