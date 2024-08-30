@@ -324,9 +324,6 @@ $(document).ready(function(){
             });
         });
 
-        console.log('listPaymentData', listPaymentData)
-        console.log('listProduct', listProduct)
-
         $.ajax({
             url: '/payment/create',
             type: 'POST',
@@ -341,7 +338,7 @@ $(document).ready(function(){
             },
             success: function(response) {
                 alert('Venda salva com sucesso!');
-                // location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao salvar a venda:', error);
@@ -501,9 +498,6 @@ $(document).ready(function(){
             });
         });
 
-        console.log('listPaymentData', listPaymentData)
-        console.log('listProduct', listProduct)
-
         $.ajax({
             url: '/payment/update/' + iptHiddenId,
             type: 'PUT',
@@ -518,7 +512,6 @@ $(document).ready(function(){
             },
             success: function(response) {
                 alert('Venda atualizada com sucesso!');
-                // location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao atualizar a venda:', error);

@@ -12,20 +12,20 @@
                   <th scope="col" style="width: 5%">ID</th>
                   <th scope="col" style="width: 20%">Cliente</th>
                   <th scope="col" style="width: 10%">Valor</th>
-                  <th scope="col" style="width: 15%">Quantiade Parcelas</th>
+                  <th scope="col" style="width: 13%">Quantiade Parcelas</th>
                   <th scope="col" style="width: 15%">Tipo de Pagamento</th>
-                  <th scope="col" style="width: 15%">Ações</th>
+                  <th scope="col" style="width: 11%">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($payments as $payment)
                     <tr> 
-                        <th>{{$payment->id}}</th>
-                        <th>{{$payment->client}}</th>
-                        <th>{{$payment->subtotal}}</th>
-                        <th>{{$payment->qtd_parcels}}</th>
-                        <th>{{$payment->payment_type}}</th>
-                        <th> 
+                        <td>{{$payment->id}}</td>
+                        <td>{{$payment->client}}</td>
+                        <td class="moneyMask">{{$payment->subtotal}}</td>
+                        <td>{{$payment->qtd_parcels}}</td>
+                        <td>{{$payment->payment_type}}</td>
+                        <td> 
                             <button type="button" class="btn btn-danger remove-payment" data-id={{$payment->id}}>
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
@@ -35,7 +35,7 @@
                             <a href="/payment/edit/{{$payment->id}}" type="button" class="btn btn-warning edit-payment">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </a>
-                        </th>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

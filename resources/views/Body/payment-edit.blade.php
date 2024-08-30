@@ -151,7 +151,7 @@
                             <tr>
                                 <td scope="col" style="width: 15%">{{ $linked->parcel }}</td>
                                 <td scope="col" style="width: 10%">{{ $linked->pay_date }}</td>
-                                <td scope="col" style="width: 30%">{{ $linked->pay_value }}</td>
+                                <td scope="col" style="width: 30%" class="moneyMask">{{ $linked->pay_value }}</td>
                                 <td scope="col" style="width: 30%">{{ $linked->type_payment }}</td>
                                 <td> 
                                     <button type="button" class="btn btn-danger remove-item"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
