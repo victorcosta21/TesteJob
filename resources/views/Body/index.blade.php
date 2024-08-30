@@ -154,7 +154,7 @@
                     <input type="text" class="form-control" readonly id="totValue"></input>
                 </div>
                 <div class="col-md-2"> 
-                    <button type="button" class="btn btn-success" id="saveSell">Salvar Venda</button>
+                    <button type="button" class="btn btn-success" id="saveSell" disabled>Salvar Venda</button>
                 </div>
                 <div class="col-md-3"> 
                     <a href="/payments" type="button" class="btn btn-success" id="allSell" href="/payments">Visualizar Vendas</a>

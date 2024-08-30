@@ -23,10 +23,6 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pagamento cadastrado com sucesso!'
-        ]);
         $validated = $request->validate([
             'clientSelect' => 'required',
             'totValue' => 'required',
@@ -132,7 +128,7 @@ class PaymentController extends Controller
             $paymentProducts = $request->listProduct;
             foreach($paymentProducts as $product){
                 $linkedProduct = new LinkedProducts();
-                $linkedProduct->payment_id = $payments->id;
+                $linkedProduct->payment_id = $payment->id;
                 $linkedProduct->product_name = $product['nome'];
                 $linkedProduct->quantity = $product['quantidade'];
                 $linkedProduct->value = $product['valor'];

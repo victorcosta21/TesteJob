@@ -54,7 +54,7 @@ $(document).ready(function(){
 
         var novaLinha = `
             <tr>
-                <th>${produtoSelecionado}</th>
+                <td>${produtoSelecionado}</th>
                 <td>${quantidade}</td>
                 <td>${valorUnitarioFormatado}</td>
                 <td>${subtotalFormatado}</td>
@@ -440,6 +440,92 @@ $(document).ready(function(){
 
         return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
     }
+
+    function toggleSaveButton() {
+        if ($('.list-payment-type tbody tr').length === 0) {
+            $('#saveSell').prop('disabled', true);
+        } else {
+            $('#saveSell').prop('disabled', false);
+        }
+    }
+
+    $('.list-payment-type tbody').on('DOMNodeInserted DOMNodeRemoved', function() {
+        toggleSaveButton();
+    });
+
+    $('#updateSell').on('click', function() {
+        var clientSelect = $('#clientSelect').val();
+        var totValue = $('#totValue').val().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+        var qtdPacel = $('#qtdPacel').val();
+        var typePayment = $('#daysPayment').val();
+        var iptHiddenId = $('#iptHiddenId').val();
+
+        if(!$('#clientSelect').val()){
+            alert("Por favor, selecione um cliente para anexar a venda!");
+            return;
+        }
+
+        if ($('#daysPayment').val() === 'Personalizado' && $('#valueNeedPay').val() != 'R$ 0,00') {
+            console.log('valueNeedPay', $('#valueNeedPay').val());
+            alert("Insira o valor completo antes de atualizar a venda!");
+            return;
+        }
+
+        var listProduct = [];
+        $('.listProducts tbody tr').each(function() {
+            var productNome = $(this).find('td').eq(0).text();
+            var productQuantidade = $(this).find('td').eq(1).text();
+            var productValor = $(this).find('td').eq(2).text();
+            var productSubtotal = $(this).find('td').eq(3).text();
+
+            listProduct.push({
+                nome: productNome,
+                quantidade: productQuantidade,
+                valor: productValor,
+                subtotal: productSubtotal
+            });
+        });
+
+        var listPaymentData = [];
+        $('.list-payment-type tbody tr').each(function() {
+            var parcela = $(this).find('td').eq(0).text();
+            var data = $(this).find('td').eq(1).text();
+            var valor = $(this).find('td').eq(2).text().replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+            var tipo = $(this).find('td').eq(3).text();
+
+            listPaymentData.push({
+                parcela: parcela,
+                data: data,
+                valor: valor,
+                tipo: tipo
+            });
+        });
+
+        console.log('listPaymentData', listPaymentData)
+        console.log('listProduct', listProduct)
+
+        $.ajax({
+            url: '/payment/update/' + iptHiddenId,
+            type: 'PUT',
+            data: {
+                _token: '{{ csrf_token() }}',
+                clientSelect: clientSelect,
+                totValue: totValue,
+                qtdPacel: qtdPacel,
+                typePayment: typePayment,
+                paymentDetails: listPaymentData,
+                listProduct: listProduct
+            },
+            success: function(response) {
+                alert('Venda atualizada com sucesso!');
+                // location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao atualizar a venda:', error);
+                alert('Houve um erro ao atualizar a venda. Tente novamente.');
+            }
+        });
+    });
 
 });
 </script>

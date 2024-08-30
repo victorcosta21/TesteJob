@@ -148,13 +148,15 @@
                           </thead>
                           <tbody>
                             @foreach($payment->linkedPayments as $linked)
-                            <td scope="col" style="width: 15%">{{ $linked->parcel }}</td>
-                            <td scope="col" style="width: 10%">{{ $linked->pay_date }}</td>
-                            <td scope="col" style="width: 30%">{{ $linked->pay_value }}</td>
-                            <td scope="col" style="width: 30%">{{ $linked->type_payment }}</td>
-                            <td> 
-                                <button type="button" class="btn btn-danger remove-item"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                            </td>
+                            <tr>
+                                <td scope="col" style="width: 15%">{{ $linked->parcel }}</td>
+                                <td scope="col" style="width: 10%">{{ $linked->pay_date }}</td>
+                                <td scope="col" style="width: 30%">{{ $linked->pay_value }}</td>
+                                <td scope="col" style="width: 30%">{{ $linked->type_payment }}</td>
+                                <td> 
+                                    <button type="button" class="btn btn-danger remove-item"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -171,16 +173,16 @@
                 <div class="col-md-3">
                     <input type="text" class="form-control" readonly id="totValue"></input>
                 </div>
-                <div class="col-md-2"> 
-                    <button type="button" class="btn btn-success" id="saveSell">Salvar Venda</button>
+                <div class="col-md-3"> 
+                    <button type="button" class="btn btn-success" id="updateSell">Atualizar Venda</button>
                 </div>
                 <div class="col-md-3"> 
-                    <a href="/payments" type="button" class="btn btn-success" id="allSell" href="/payments">Visualizar Vendas</a>
+                    <a href="/payments" type="button" class="btn btn-danger" id="allSell" href="/payments">Voltar</a>
                 </div>
             </div>
         </div
     </div> 
-
+    <input type="hidden" value="{{$payment->id}}" id="iptHiddenId"></input>
 </div>
 
 <script>
