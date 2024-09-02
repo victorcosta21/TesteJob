@@ -439,16 +439,20 @@ $(document).ready(function(){
     }
 
     function toggleSaveButton() {
-        if ($('.list-payment-type tbody tr').length === 0) {
-            $('#saveSell').prop('disabled', true);
-        } else {
-            $('#saveSell').prop('disabled', false);
-        }
+    if ($('.list-payment-type tbody tr').length === 0) {
+        $('#saveSell').prop('disabled', true);
+    } else {
+        $('#saveSell').prop('disabled', false);
     }
-
-    $('.list-payment-type tbody').on('DOMNodeInserted DOMNodeRemoved', function() {
+    }
+    const targetNode = document.querySelector('.list-payment-type tbody');
+    const config = { childList: true };
+    const callback = function(mutationsList, observer) {
         toggleSaveButton();
-    });
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+    toggleSaveButton();
 
     $('#updateSell').on('click', function() {
         var clientSelect = $('#clientSelect').val();
